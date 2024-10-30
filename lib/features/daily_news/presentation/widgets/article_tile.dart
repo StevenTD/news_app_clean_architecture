@@ -5,7 +5,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class ArticleWidget extends StatelessWidget {
   final ArticleEntity article;
-  const ArticleWidget({super.key, required this.article});
+  final bool isRemovable;
+  final void Function(ArticleEntity)? onRemove;
+  Function? onArticlePressed;
+  ArticleWidget(
+      {super.key,
+      required this.article,
+      required this.isRemovable,
+      this.onRemove,
+      this.onArticlePressed});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +24,25 @@ class ArticleWidget extends StatelessWidget {
         children: [
           _buildImage(context),
           _buildTitleAndDescription(),
+          _buildActionButton(),
         ],
       ),
     );
+  }
+
+  Widget _buildActionButton() {
+    if (isRemovable) {
+      return Center(
+        child: ElevatedButton(
+            onPressed: () => onRemove!(article),
+            child: Icon(
+              Icons.remove,
+              color: Colors.redAccent,
+            )),
+      );
+    }
+
+    return Container();
   }
 
   Widget _buildImage(BuildContext context) {

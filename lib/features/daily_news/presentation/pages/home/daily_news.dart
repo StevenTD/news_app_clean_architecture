@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app_clean_architecture/features/daily_news/domain/entities/article.dart';
 import 'package:news_app_clean_architecture/features/daily_news/presentation/bloc/article/remote/remote_article_bloc.dart';
 import 'package:news_app_clean_architecture/features/daily_news/presentation/bloc/article/remote/remote_article_state.dart';
 import 'package:news_app_clean_architecture/features/daily_news/presentation/widgets/article_tile.dart';
@@ -11,17 +12,29 @@ class DailyNews extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: _buildBody(),
     );
   }
 
-  _buildAppBar() {
+  _buildAppBar(BuildContext context) {
     return AppBar(
       title: Text(
         'Daily News',
         style: TextStyle(color: Colors.black),
       ),
+      actions: [
+        GestureDetector(
+          onTap: () => _onShowSavedArticlesViewTapped(context),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Icon(
+              Icons.bookmark,
+              color: Colors.black,
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -42,13 +55,26 @@ class DailyNews extends StatelessWidget {
           return ListView.builder(
               itemCount: state.articles!.length,
               itemBuilder: (context, index) {
-                return ArticleWidget(
-                  article: state.articles![index],
+                return GestureDetector(
+                  onTap: () =>
+                      _onArticlePressed(context, state.articles![index]),
+                  child: ArticleWidget(
+                    article: state.articles![index],
+                    isRemovable: false,
+                  ),
                 );
               });
         }
         return const SizedBox();
       },
     );
+  }
+
+  void _onArticlePressed(BuildContext context, ArticleEntity article) {
+    Navigator.pushNamed(context, '/ArticleDetails', arguments: article);
+  }
+
+  void _onShowSavedArticlesViewTapped(BuildContext context) {
+    Navigator.pushNamed(context, '/SavedArticles');
   }
 }
