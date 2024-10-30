@@ -34,4 +34,17 @@ class ArticleModel extends ArticleEntity {
       content: map['content'] ?? '',
     );
   }
+
+  factory ArticleModel.fromEntity(ArticleEntity entity) {
+    return ArticleModel(
+      id: entity.id,
+      author: entity.author,
+      content: entity.content,
+      publishedAt: entity.publishedAt,
+      urlToImage: entity.urlToImage,
+      url: entity.url,
+      description: entity.description,
+      title: entity.title,
+    );
+  }
 }
